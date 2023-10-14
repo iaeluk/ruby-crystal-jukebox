@@ -1,18 +1,19 @@
 class Jukebox
+
   def initialize
     @name = nil
   end
 
   def find_song(song_name, directory)
     unless Dir.exist?(directory)
-      puts "Directory not found."
+      puts "Diretório não encontrado."
       return
     end
 
     song_name_words = song_name.downcase.split(' ')
-    entries = Dir.glob(File.join(directory, "*mp3"))
+    songs_in_directory = Dir.glob(File.join(directory, "*mp3"))
 
-    entries.each do |name|
+    songs_in_directory.each do |name|
       file_name = File.basename(name, ".mp3").downcase
 
       if song_name_words.all? { |word| file_name.include?(word) }
@@ -22,16 +23,17 @@ class Jukebox
     end
 
     if @name.nil?
-      puts "Song not found."
+      puts "Música não encontrada."
     end
   end
 
   def play
     if @name
-      puts "Now playing: #{@name}"
-      `cvlc "#{@name}"`
+      song_name = File.basename(@name)
+      puts "Tocando: #{song_name} \nPressione Ctrl + C para parar."
+      `mpv --no-video "#{@name}"`
     else
-      puts "No song selected."
+      puts "Nenhuma música selecionada."
     end
   end
 end
